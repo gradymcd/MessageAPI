@@ -1,0 +1,19 @@
+{
+  "name": "node-rest-oauth",
+  "main": "server.js",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "crypto": "0.0.3",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "gravatar": "^1.5.2",
+    "mongoose": "^4.5.8",
+    "node-bcrypt": "0.0.1",
+    "oauth2orize": "^1.4.1",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1"
+  }
+}

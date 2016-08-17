@@ -1,0 +1,55 @@
+oauth scopes
+	account
+	message
+	operate
+	friends
+	blockeds
+	view_messages_other_apps
+	
+
+classes
+	user
+		id: int
+		username: string
+		email: string
+		connected_services: arr
+		auth
+			password: hashed, salted string
+			oauth_token: string
+	message
+		id: int
+		sender: user.id
+		room: room.id
+		time: timestamp
+	room
+		id: int
+		users: (user.id, permission)[]
+	permission
+		owner: bool
+		addUser: bool
+		removeUser: bool
+		sendMessage: bool
+		sendPriorityMessage: bool
+	
+	
+simple api
+	keys required - pay for x requests
+	oauth
+open source
+permissive licensing
+	apps must disclose it is not their service
+send text, video, picture, file
+direct chat
+group chat
+username/qr code/phone number/google/facebook/twitter/steam
+push notifications
+	gcm/apns/mpns/onesignal
+	registration with url (required standardized api)
+message feed
+	time parameter to only download messages after a certain time (to save bandwidth)
+encryption
+	end-to-end (key stored locally, never stored on server)
+		alphanumerical/qr code
+	automatic key exchange (transparent to user, key stored on server, default)
+
+
