@@ -2,7 +2,7 @@
  - [x] Basic
  - [x] Oauth
     - [ ] Scope
-    - [ ]
+    - [ ] Automated client registration
  - [ ] 3rd party (Google, Facebook, Twitter, Steam, reddit, etc.)
  - [ ] Account creation page
  - [ ] Account creation API
