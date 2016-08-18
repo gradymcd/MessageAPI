@@ -39,17 +39,20 @@ router.get('/', function (req, res) {
 router.route('/test').get(authController.isAuthenticated, function (req, res) {
 	res.send(req.user._id);
 });
+
 //Room
 router.route('/room/create')
 	.post(authController.isAuthenticated, roomController.post_create);
 router.route('/room/:room').get(authController.isAuthenticated, roomController.get);
 router.route('/room/:room/message')
-	.post(authController.isAuthenticated, roomController.post_message)
+	.post(authController.isAuthenticated, roomController.post_message);
+router.route('/room/:room/message/:message')
 	.get(authController.isAuthenticated, roomController.get_message);
+
 //User
 router.route('/users')
-	.post(userController.post_users)
-	.get(authController.isAuthenticated, userController.get_users);
+	.post(userController.post_users);
+
 //Oauth
 router.route('/clients')
 	.post(authController.isAuthenticated, oauthClientController.postClients)
@@ -57,7 +60,6 @@ router.route('/clients')
 router.route('/oauth2/authorize')
 	.get(authController.isAuthenticated, oauthController.authorization)
 	.post(authController.isAuthenticated, oauthController.decision);
-// Create endpoint handlers for oauth2 token
 router.route('/oauth2/token')
 	.post(authController.isClientAuthenticated, oauthController.token);
 

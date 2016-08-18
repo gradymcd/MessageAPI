@@ -4,7 +4,6 @@ var User = require('../models/User');
 var Client = require('../models/OauthClient');
 var Token = require('../models/OauthToken');
 var Code = require('../models/OauthCode');
-var mongoose = require('mongoose');
 
 // Create OAuth 2.0 server
 var server = oauth2orize.createServer();
@@ -88,7 +87,6 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, c
 // User authorization endpoint
 exports.authorization = [
 	server.authorization(function (clientId, redirectUri, callback) {
-		console.log(clientId);
 		Client.findOne({id: clientId}, function (err, client) {
 			if (err) {
 				return callback(err);

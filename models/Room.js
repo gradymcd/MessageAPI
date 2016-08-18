@@ -19,15 +19,6 @@ var Member = new mongoose.Schema({
 	}
 });
 
-/*
- 
- User.methods.testffff = function() {
- this.findById()
- };
- */
-
-//var RoomUser = mongoose.model('RoomUser', User);
-
 var Room = new mongoose.Schema({
 		messages: [Message],
 		members: [Member],

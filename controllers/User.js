@@ -16,13 +16,3 @@ exports.post_users = function(req, res) {
     res.json({ message: user._id });
   });
 };
-
-// Create endpoint /api/users for GET
-exports.get_users = function(req, res) {
-  User.find(function(err, users) {
-    if (err)
-      res.send(err);
-
-    res.json(users);
-  });
-};
