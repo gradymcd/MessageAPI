@@ -50,8 +50,10 @@ router.route('/room/:room/message/:message')
 	.get(authController.isAuthenticated, roomController.get_message);
 
 //User
-router.route('/users')
+router.route('/user')
 	.post(userController.post_users);
+router.route('/me')
+	.get(authController.isAuthenticated, userController.get_account);
 
 //Oauth
 router.route('/clients')

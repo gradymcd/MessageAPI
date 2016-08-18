@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var Room = new require('../models/Room');
+var User = new require('../models/User');
 var response = new require('./response');
 
 exports.get = function (req, res) {
@@ -54,7 +55,20 @@ exports.post_create = function (req, res) {
 			response.respond(res, false, 500, 'Internal server error', null, err);
 		}
 		else {
-			response.respond(res, true, 200, 'Created room', {'id': room._id});
+			User.findById(req.user._id, function (err, user) {
+				if (err) {
+					response.respond(res, false, 500, 'Internal server error', null, err);
+				} else {
+					user.rooms.push(room._id);
+					user.save(function (err) {
+						if (err) {
+							response.respond(res, false, 500, 'Internal server error', null, err);
+						} else {
+							response.respond(res, true, 200, 'Created room', {'id': room._id});
+						}
+					});
+				}
+			});
 		}
 	});
 };
