@@ -21,7 +21,6 @@ exports.get_account = function (req, res) {
 		if (err) {
 			response.respond(res, false, 500, 'Internal server error', null, err);
 		} else {
-			
 			response.respond(res, true, 200, 'Found user', user);
 		}
 	})

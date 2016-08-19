@@ -5,22 +5,8 @@ var User = new require('../models/User');
 var response = new require('./response');
 
 exports.get = function (req, res) {
-	Room.findById(req.params.room, function (err, room) {
-		if (room == null || room == undefined || !room) {
-			response.respond(res, false, 404, 'Room not found');
-		}
-		else if (err) {
-			response.respond(res, false, 500, 'Internal server error', null, err);
-		}
-		else {
-			room.findMemberById(mongoose.Types.ObjectId(req.user._id), function (member) {
-				if (req.user._id.toString() == member.id.toString()) {
-					response.respond(res, true, 200, 'Found room', room);
-				} else {
-					response.respond(res, false, 403, 'User is not allowed in the room');
-				}
-			});
-		}
+	verifyUser(res, req.params.room, req.user._id, '', function (member, room) {
+		response.respond(res, true, 200, 'Found room', room);
 	});
 };
 
@@ -74,47 +60,49 @@ exports.post_create = function (req, res) {
 };
 
 exports.post_message = function (req, res) {
-	Room.findById(req.params.room, function (err, room) {
-		if (err) {
-			response.respond(res, false, 500, 'Internal server error', null, err);
-		}
-		else {
-			room.findMemberById(req.user._id, function (member) {
-				if (!member || !member.permissions.sendMessage) {
-					response.respond(res, false, 403, 'User is not allowed in the room');
-				} else {
-					room.messages.push({
-						message: req.body.message,
-						sender: mongoose.Types.ObjectId(req.user._id),
-						mime: req.body.mime
-					});
-					
-					room.save(function (err) {
-						if (err) {
-							response.respond(res, false, 500, 'Internal server error', null, err);
-						}
-						else {
-							response.respond(res, true, 200, 'Sent message', {'id': room.messages[room.messages.length - 1]._id})
-						}
-					});
-				}
-			});
-		}
+	verifyUser(res, req.params.room, req.user._id, 'sendMessage', function (member, room) {
+		room.messages.push({
+			message: req.body.message,
+			sender: mongoose.Types.ObjectId(req.user._id),
+			mime: req.body.mime
+		});
+		
+		room.save(function (err) {
+			if (err) {
+				response.respond(res, false, 500, 'Internal server error', null, err);
+			}
+			else {
+				response.respond(res, true, 200, 'Sent message', {'id': room.messages[room.messages.length - 1]._id})
+			}
+		});
 	});
 };
 
 exports.get_message = function (req, res) {
-	Room.findById(req.params.room, function (err, room) {
-		if (err)
-			response.respond(res, false, 500, 'Internal server error', null, err);
-		else {
-			room.findMemberById(req.user._id, function (member) {
-				if (!member || !member.permissions.sendMessage) {
-					response.respond(res, false, 403, 'User is not allowed in the room');
-				} else {
-					response.respond(res, true, 200, 'Found message', {'message': room.messages.id(req.params.message)});
-				}
-			});
-		}
+	verifyUser(res, req.params.room, req.user._id, null, function (member, room) {
+		response.respond(res, true, 200, 'Found message', {'message': room.messages.id(req.params.message)});
 	});
+};
+
+var verifyUser = function (res, roomId, userId, permission, callback) {
+	Room.findById(roomId, function (err, room) {
+		if (err) {
+			response.respond(res, false, 500, 'Internal server error', null, err);
+		} else {
+			if (!room) {
+				response.respond(res, false, 404, 'Room not found');
+			} else {
+				room.findMemberById(userId, function (member) {
+					if (!member) {
+						response.respond(res, false, 403, 'User not in room');
+					}
+					else if (member.permissions[permission] == false) {
+						response.respond(res, false, 403, 'No permission');
+					} else {
+						callback(member, room);
+					}
+				});
+			}
+		}
+	})
 };
