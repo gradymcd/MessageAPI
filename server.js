@@ -48,12 +48,17 @@ router.route('/room/:room/message')
 	.post(authController.isAuthenticated, roomController.post_message);
 router.route('/room/:room/message/:message')
 	.get(authController.isAuthenticated, roomController.get_message);
+router.route('/room/:room/member/add')
+	.post(authController.isAuthenticated, roomController.post_member_add);
+router.route('/room/:room/member/:member')
+	.get(authController.isAuthenticated, roomController.get_member);
 
 //User
 router.route('/user')
 	.post(userController.post_users);
-router.route('/me')
-	.get(authController.isAuthenticated, userController.get_account);
+router.route('/account')
+	.get(authController.isAuthenticated, userController.get_account)
+	.post(authController.isAuthenticated, userController.post_account);
 
 //Oauth
 router.route('/clients')
@@ -67,7 +72,7 @@ router.route('/oauth2/token')
 
 // Use express session support since OAuth2orize requires it
 app.use(session({
-	secret: 'Super Secret Session Key',
+	secret: 'Super Secret Session Key', // CHANGE THIS KEY IN YOUR INSTALLATION
 	saveUninitialized: true,
 	resave: true
 }));
