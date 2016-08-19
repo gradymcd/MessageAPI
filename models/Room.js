@@ -37,4 +37,13 @@ Room.methods.findMemberById = function (id, callback) {
 	}
 };
 
+Room.methods.hasUser = function (id) {
+	for (var i = 0; i < this.members.length; i++) {
+		if (this.members[i].id.toString() == id.toString()) {
+			return true;
+		}
+	}
+	return false;
+};
+
 module.exports = mongoose.model('Room', Room);
