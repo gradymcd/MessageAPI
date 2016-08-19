@@ -11,7 +11,7 @@
 ## Rooms
  - [x] Room creation
  - [x] Send messages
- - [ ] Add users
+ - [x] Add users
 
 ## Account preferences
  - [x] Preferences model
