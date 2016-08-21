@@ -34,10 +34,9 @@ exports.post_account = function (req, res) {
 		} else {
 			for (var i in req.body.prefs) {
 				if (i != password) {
-					user[i] = prefs[i];
+					user[i] = req.body.prefs[i];
 				}
 			}
 		}
-		
 	})
 };
