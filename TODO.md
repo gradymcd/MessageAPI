@@ -32,3 +32,5 @@
 
 ## Misc
  - [ ] Rename project to more user-friendly name
+ - [ ] Write API docs
+ - [ ] Develop a uniform coding style

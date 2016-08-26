@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>MessageAPI</title>
-</head>
-<body>
-<p>Hi <%= user.username %>!</p>
-<p><b><%= client.name %></b> is requesting <b>full access</b> to your account.</p>
-<p>Do you approve?</p>
-
-<form action="/api/oauth2/authorize" method="post">
-	<input name="transaction_id" type="hidden" value="<%= transactionID %>">
-	<div>
-		<input type="submit" value="Allow" id="allow">
-		<input type="submit" value="Deny" name="cancel" id="deny">
-	</div>
-</form>
-
-</body>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="col-lg-12">
+				<div class="well">
+					<form method="post" action="/oauth/dialog/authorize/decision" class="form-horizontal">
+						<div class="form-group">
+							<input type="hidden" name="transaction_id" value="<%= transactionID %>">
+							Hello, <%= user.username %>!<br>
+							<%= client.title %> is requesting access to your account. Do you wish to allow this?<br>
+							<input type="submit" class="btn btn-raised btn-primary" value="Allow" name="allow">
+							<input type="submit" class="btn btn-raised btn-danger" value="Decline" name="decline">
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-sm-6 well">fds</div>
+		</div>
+	</body>
 </html>

@@ -1,17 +1,19 @@
 var mongoose = require('mongoose');
+var router = require('express').Router();
 
 var Room = new require('../models/Room');
 var User = new require('../models/User');
 var response = require('./response');
 var utils = require('../utils');
+var auth = require('./auth');
 
-exports.get = function (req, res) {
+router.get('/:room', auth.isAuthenticated, function (req, res) {
 	verifyUser(res, req.params.room, req.user._id, '', function (member, room) {
 		response.respond(res, true, 200, 'Found room', room);
 	});
-};
+});
 
-exports.post_create = function (req, res) {
+router.post('/create', auth.isAuthenticated, function (req, res) {
 	var room = new Room();
 	if (req.body.message == '' || req.body.message == undefined) {
 		room.messages.push({
@@ -23,7 +25,7 @@ exports.post_create = function (req, res) {
 		room.messages.push({
 			message: req.body.message,
 			sender: utils.toObjectId(res, req.user._id),
-			mime: req.body.mime,
+			mime: req.body.mime
 		});
 	}
 	room.members.push({
@@ -58,9 +60,9 @@ exports.post_create = function (req, res) {
 			});
 		}
 	});
-};
+});
 
-exports.post_message = function (req, res) {
+router.post('/message', auth.isAuthenticated, function (req, res) {
 	verifyUser(res, req.params.room, req.user._id, 'sendMessage', function (member, room) {
 		room.messages.push({
 			message: req.body.message,
@@ -76,22 +78,22 @@ exports.post_message = function (req, res) {
 			}
 		});
 	});
-};
+});
 
-exports.get_message = function (req, res) {
+router.get('/message', auth.isAuthenticated, function (req, res) {
 	verifyUser(res, req.params.room, req.user._id, '', function (member, room) {
 		response.respond(res, true, 200, 'Found message', {'message': room.messages.id(req.params.message)});
 	});
-};
+});
 
-exports.post_member_add = function (req, res) {
+router.post('/member/add', auth.isAuthenticated, function (req, res) {
 	verifyUser(res, req.params.room, req.user._id, 'addUser', function (member, room) {
 		utils.toObjectId(res, req.body.id, function (id) {
 			User.findById(id, function (err, user) {
 				if (!user) {
-					response.respond(res, false, 404, 'User not found', {'extended': 'A user with the ID, \'' + id + '\' does not exist'})
+					response.respond(res, false, 404, 'User not found', {'extended': 'A user with the ID, \'' + id + '\' does not exist'});
 				} else if (room.hasUser(id)) {
-					response.respond(res, false, 400, 'User already in room', {'extended': 'A user with the ID, \'' + id + '\' is already in the room'})
+					response.respond(res, false, 400, 'User already in room', {'extended': 'A user with the ID, \'' + id + '\' is already in the room'});
 				} else {
 					// There should probably be checks for the permissions, but I didn't really feel like adding them
 					if (req.body.permissions)
@@ -108,13 +110,13 @@ exports.post_member_add = function (req, res) {
 			});
 		});
 	});
-};
+});
 
-exports.get_member = function (req, res) {
+router.get('/member', auth.isAuthenticated, function (req, res) {
 	verifyUser(res, req.params.room, req.user._id, '', function (member, room) {
 		
 	});
-};
+});
 
 var verifyUser = function (res, roomIdStr, userIdStr, permission, callback) {
 	utils.toObjectId(res, roomIdStr, function (roomId) {
@@ -143,3 +145,4 @@ var verifyUser = function (res, roomIdStr, userIdStr, permission, callback) {
 	});
 };
 
+module.exports = router;
